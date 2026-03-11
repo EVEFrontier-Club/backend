@@ -1,4 +1,4 @@
-name: evefrontier_club_server
+name: evefrontier_club_client
 description: Modular tools and analytics for the EVE Frontier universe. Reputation systems, player metrics, and community infrastructure — built with Dart.
 version: 0.0.1
 homepage: https://evefrontier.club
@@ -8,18 +8,9 @@ environment:
   sdk: "^3.8.0"
 
 dependencies:
-  serverpod: ^3.4.2
-  serverpod_auth_idp_server: ^3.4.2
+  serverpod_client: ^3.4.2
+  serverpod_auth_idp_client: ^3.4.2
   evefrontier_index:
     git:
       url: https://github.com/EVEFrontier-Club/frontier-index.git
-
-dev_dependencies:
-  lints: ">=3.0.0 <7.0.0"
-  serverpod_test: ^3.4.2
-  test: ^1.25.5
-
-serverpod:
-  scripts:
-    # Starts the server and applies migrations
-    start: dart bin/main.dart --apply-migrations
+      path: client
