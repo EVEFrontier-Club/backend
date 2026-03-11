@@ -6,16 +6,16 @@ This is the backend core of **EVE Frontier Club**, a modular analytics and reput
 
 The backend is structured as independent, pluggable modules. Each module defines its own database models, services, and endpoints.
 
-- `trust_index`: Credit-score-style trust rating for players based on economic, behavioral, and social metrics.
-- `corp_index` *(coming soon)*: Reliability and governance scores for corporations.
-- `region_index` *(planned)*: Economic health and risk indicators for regions.
+- `evefrontier_index`: Credit-score-style trust rating for players based on economic, behavioral, and social metrics.
+- `corp_index` _(coming soon)_: Reliability and governance scores for corporations.
+- `region_index` _(planned)_: Economic health and risk indicators for regions.
 
 ## 🧱 Tech Stack
 
-- **Language**: Dart  
-- **Framework**: Serverpod  
-- **Database**: PostgreSQL  
-- **Deployment**: Docker-ready, modular architecture  
+- **Language**: Dart
+- **Framework**: Serverpod
+- **Database**: PostgreSQL
+- **Deployment**: Docker-ready, modular architecture
 - **Frontend**: Jaspr (see separate repo)
 
 ## 🛠 Setup

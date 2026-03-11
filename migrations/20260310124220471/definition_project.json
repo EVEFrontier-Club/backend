@@ -15,7 +15,7 @@
     },
     {
       "__className__": "serverpod.DatabaseMigrationVersion",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "version": "20260310123003084"
     },
     {

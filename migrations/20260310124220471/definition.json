@@ -2579,7 +2579,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "normalized_metrics",
       "dartName": "NormalizedMetricDao",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "schema": "public",
       "columns": [
         {
@@ -2707,7 +2707,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "player_aliases",
       "dartName": "PlayerAliasDao",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "schema": "public",
       "columns": [
         {
@@ -2810,7 +2810,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "players",
       "dartName": "PlayerDao",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "schema": "public",
       "columns": [
         {
@@ -2894,7 +2894,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "raw_events",
       "dartName": "RawEventDao",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "schema": "public",
       "columns": [
         {
@@ -3030,7 +3030,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "score_history",
       "dartName": "ScoreHistoryDao",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "schema": "public",
       "columns": [
         {
@@ -3135,7 +3135,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "scores",
       "dartName": "ScoreDao",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "schema": "public",
       "columns": [
         {
@@ -3256,7 +3256,7 @@
       "__className__": "serverpod.TableDefinition",
       "name": "sources",
       "dartName": "SourceDao",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "schema": "public",
       "columns": [
         {
@@ -3842,7 +3842,7 @@
     },
     {
       "__className__": "serverpod.DatabaseMigrationVersion",
-      "module": "trust_index",
+      "module": "evefrontier_index",
       "version": "20260310123003084"
     },
     {

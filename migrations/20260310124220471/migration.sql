@@ -203,10 +203,10 @@ INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
     DO UPDATE SET "version" = '20260213194423028', "timestamp" = now();
 
 --
--- MIGRATION VERSION FOR trust_index
+-- MIGRATION VERSION FOR evefrontier_index
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('trust_index', '20260310123003084', now())
+    VALUES ('evefrontier_index', '20260310123003084', now())
     ON CONFLICT ("module")
     DO UPDATE SET "version" = '20260310123003084', "timestamp" = now();
 

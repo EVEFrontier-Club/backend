@@ -8,7 +8,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "normalized_metrics",
         "dartName": "NormalizedMetricDao",
-        "module": "trust_index",
+        "module": "evefrontier_index",
         "schema": "public",
         "columns": [
           {
@@ -87,14 +87,10 @@
           {
             "__className__": "serverpod.ForeignKeyDefinition",
             "constraintName": "normalized_metrics_fk_0",
-            "columns": [
-              "playerId"
-            ],
+            "columns": ["playerId"],
             "referenceTable": "players",
             "referenceTableSchema": "public",
-            "referenceColumns": [
-              "id"
-            ],
+            "referenceColumns": ["id"],
             "onUpdate": 3,
             "onDelete": 3
           }
@@ -144,7 +140,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "player_aliases",
         "dartName": "PlayerAliasDao",
-        "module": "trust_index",
+        "module": "evefrontier_index",
         "schema": "public",
         "columns": [
           {
@@ -188,28 +184,20 @@
           {
             "__className__": "serverpod.ForeignKeyDefinition",
             "constraintName": "player_aliases_fk_0",
-            "columns": [
-              "playerId"
-            ],
+            "columns": ["playerId"],
             "referenceTable": "players",
             "referenceTableSchema": "public",
-            "referenceColumns": [
-              "id"
-            ],
+            "referenceColumns": ["id"],
             "onUpdate": 3,
             "onDelete": 3
           },
           {
             "__className__": "serverpod.ForeignKeyDefinition",
             "constraintName": "player_aliases_fk_1",
-            "columns": [
-              "sourceId"
-            ],
+            "columns": ["sourceId"],
             "referenceTable": "sources",
             "referenceTableSchema": "public",
-            "referenceColumns": [
-              "id"
-            ],
+            "referenceColumns": ["id"],
             "onUpdate": 3,
             "onDelete": 3
           }
@@ -259,7 +247,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "players",
         "dartName": "PlayerDao",
-        "module": "trust_index",
+        "module": "evefrontier_index",
         "schema": "public",
         "columns": [
           {
@@ -347,7 +335,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "raw_events",
         "dartName": "RawEventDao",
-        "module": "trust_index",
+        "module": "evefrontier_index",
         "schema": "public",
         "columns": [
           {
@@ -419,28 +407,20 @@
           {
             "__className__": "serverpod.ForeignKeyDefinition",
             "constraintName": "raw_events_fk_0",
-            "columns": [
-              "playerId"
-            ],
+            "columns": ["playerId"],
             "referenceTable": "players",
             "referenceTableSchema": "public",
-            "referenceColumns": [
-              "id"
-            ],
+            "referenceColumns": ["id"],
             "onUpdate": 3,
             "onDelete": 3
           },
           {
             "__className__": "serverpod.ForeignKeyDefinition",
             "constraintName": "raw_events_fk_1",
-            "columns": [
-              "sourceId"
-            ],
+            "columns": ["sourceId"],
             "referenceTable": "sources",
             "referenceTableSchema": "public",
-            "referenceColumns": [
-              "id"
-            ],
+            "referenceColumns": ["id"],
             "onUpdate": 3,
             "onDelete": 3
           }
@@ -495,7 +475,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "score_history",
         "dartName": "ScoreHistoryDao",
-        "module": "trust_index",
+        "module": "evefrontier_index",
         "schema": "public",
         "columns": [
           {
@@ -546,14 +526,10 @@
           {
             "__className__": "serverpod.ForeignKeyDefinition",
             "constraintName": "score_history_fk_0",
-            "columns": [
-              "playerId"
-            ],
+            "columns": ["playerId"],
             "referenceTable": "players",
             "referenceTableSchema": "public",
-            "referenceColumns": [
-              "id"
-            ],
+            "referenceColumns": ["id"],
             "onUpdate": 3,
             "onDelete": 3
           }
@@ -608,7 +584,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "scores",
         "dartName": "ScoreDao",
-        "module": "trust_index",
+        "module": "evefrontier_index",
         "schema": "public",
         "columns": [
           {
@@ -680,14 +656,10 @@
           {
             "__className__": "serverpod.ForeignKeyDefinition",
             "constraintName": "scores_fk_0",
-            "columns": [
-              "playerId"
-            ],
+            "columns": ["playerId"],
             "referenceTable": "players",
             "referenceTableSchema": "public",
-            "referenceColumns": [
-              "id"
-            ],
+            "referenceColumns": ["id"],
             "onUpdate": 3,
             "onDelete": 3
           }
@@ -737,7 +709,7 @@
         "__className__": "serverpod.TableDefinition",
         "name": "sources",
         "dartName": "SourceDao",
-        "module": "trust_index",
+        "module": "evefrontier_index",
         "schema": "public",
         "columns": [
           {
