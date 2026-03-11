@@ -1,0 +1,10 @@
+type: server
+
+client_package_path: ../client
+server_test_tools_path: test/integration/test_tools
+
+modules:
+  serverpod_auth_idp:
+    nickname: auth
+  trust_index:
+    nickname: trust_index
