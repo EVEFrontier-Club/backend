@@ -82,7 +82,7 @@ class Protocol extends _i1.SerializationManagerServer {
 
     if (data is Map<String, dynamic> && data['__className__'] is String) {
       return (data['__className__'] as String).replaceFirst(
-        'evefrontier_club.',
+        'evefrontier_club_backend.',
         '',
       );
     }
@@ -151,7 +151,7 @@ class Protocol extends _i1.SerializationManagerServer {
       targetTableDefinitions;
 
   @override
-  String getModuleName() => 'evefrontier_club';
+  String getModuleName() => 'evefrontier_club_backend';
 
   /// Maps any `Record`s known to this [Protocol] to their JSON representation
   ///

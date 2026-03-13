@@ -5,12 +5,12 @@ homepage: https://evefrontier.club
 publish_to: none
 
 environment:
-  sdk: "^3.8.0"
+  sdk: ^3.10.0
 
 dependencies:
   serverpod_client: ^3.4.2
   serverpod_auth_idp_client: ^3.4.2
-  evefrontier_index:
+  evefrontier_index_module:
     git:
-      url: https://github.com/EVEFrontier-Club/frontier-index.git
+      url: https://github.com/EVEFrontier-Club/evefrontier-index-module.git
       path: client

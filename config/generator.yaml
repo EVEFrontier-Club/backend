@@ -6,5 +6,5 @@ server_test_tools_path: test/integration/test_tools
 modules:
   serverpod_auth_idp:
     nickname: auth
-  evefrontier_index:
+  evefrontier_index_module:
     nickname: evefrontier_index

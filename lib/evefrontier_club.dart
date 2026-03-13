@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
-import 'package:evefrontier_index/core.dart';
+import 'package:evefrontier_index_module/core.dart';
 
 import 'src/generated/endpoints.dart';
 import 'src/generated/protocol.dart';
