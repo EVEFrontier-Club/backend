@@ -8,15 +8,15 @@ environment:
   sdk: ^3.10.0
 
 dependencies:
-  serverpod: ^3.4.2
-  serverpod_auth_idp_server: ^3.4.2
+  serverpod: ^3.4.4
+  serverpod_auth_idp_server: ^3.4.4
   evefrontier_index_module:
     git:
       url: https://github.com/EVEFrontier-Club/evefrontier-index-module.git
 
 dev_dependencies:
   lints: ">=3.0.0 <7.0.0"
-  serverpod_test: ^3.4.2
+  serverpod_test: ^3.4.4
   test: ^1.25.5
 
 serverpod:
