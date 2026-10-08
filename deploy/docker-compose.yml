@@ -1,0 +1,138 @@
+# EVE Frontier Club - Production Deployment
+# Orchestrates frontend, backend, PostgreSQL, and Redis behind Traefik.
+
+services:
+  # ── Frontend (Jaspr SSR) ─────────────────────────────────────────────
+  frontend:
+    # Overridable via .env (see .env.example); defaults to the published tag.
+    image: ${FRONTEND_IMAGE:-ghcr.io/evefrontier-club/frontend:latest}
+    restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.frontend-http.rule=Host(`evefrontier.club`)"
+      - "traefik.http.routers.frontend-http.entrypoints=web"
+      - "traefik.http.routers.frontend-http.middlewares=frontend-https-redirect"
+
+      # Middleware definition
+      - "traefik.http.middlewares.frontend-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.frontend-https-redirect.redirectscheme.permanent=true"
+
+      # HTTPS router
+      - "traefik.http.routers.frontend-https.rule=Host(`evefrontier.club`)"
+      - "traefik.http.routers.frontend-https.entrypoints=websecure"
+      - "traefik.http.routers.frontend-https.tls=true"
+      - "traefik.http.routers.frontend-https.tls.certresolver=letsencrypt"
+
+      # Service
+      - "traefik.http.services.frontend.loadbalancer.server.port=8080"
+      - "traefik.http.services.frontend.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.frontend.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.frontend.loadbalancer.healthcheck.timeout=5s"
+
+  # ── Backend (Serverpod) ──────────────────────────────────────────────
+  backend:
+    # Overridable via .env (see .env.example); defaults to the published tag.
+    image: ${BACKEND_IMAGE:-ghcr.io/evefrontier-club/backend:latest}
+    restart: unless-stopped
+    networks:
+      - web
+      - database
+    volumes:
+      - ./secrets/passwords.yaml:/app/config/passwords.yaml:ro
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web"
+
+      # ── API server (port 8080) ──
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.backend-api-http.rule=Host(`api.evefrontier.club`)"
+      - "traefik.http.routers.backend-api-http.entrypoints=web"
+      - "traefik.http.routers.backend-api-http.middlewares=backend-https-redirect"
+
+      # Middleware definition
+      - "traefik.http.middlewares.backend-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.backend-https-redirect.redirectscheme.permanent=true"
+
+      # HTTPS router
+      - "traefik.http.routers.backend-api-https.rule=Host(`api.evefrontier.club`)"
+      - "traefik.http.routers.backend-api-https.entrypoints=websecure"
+      - "traefik.http.routers.backend-api-https.tls=true"
+      - "traefik.http.routers.backend-api-https.tls.certresolver=letsencrypt"
+
+      # Service
+      # This service serves RPC traffic on 8080, which is also where Serverpod's
+      # /readyz lives, so the healthcheck can use the default port.
+      - "traefik.http.services.backend-api.loadbalancer.server.port=8080"
+      - "traefik.http.services.backend-api.loadbalancer.healthcheck.path=/readyz"
+      - "traefik.http.services.backend-api.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.backend-api.loadbalancer.healthcheck.timeout=5s"
+
+      # ── Web server (port 8082) — trust-index path-based routing ──
+      # HTTP → HTTPS redirect
+      - "traefik.http.routers.backend-web-http.rule=Host(`api.evefrontier.club`) && PathPrefix(`/api/v1/trust-index/`)"
+      - "traefik.http.routers.backend-web-http.entrypoints=web"
+      - "traefik.http.routers.backend-web-http.middlewares=backend-https-redirect"
+
+      # HTTPS router
+      - "traefik.http.routers.backend-web-https.rule=Host(`api.evefrontier.club`) && PathPrefix(`/api/v1/trust-index/`)"
+      - "traefik.http.routers.backend-web-https.entrypoints=websecure"
+      - "traefik.http.routers.backend-web-https.tls=true"
+      - "traefik.http.routers.backend-web-https.tls.certresolver=letsencrypt"
+
+      # Service
+      # App traffic goes to the web server on 8082, but the web server does not expose
+      # /readyz — Serverpod serves it on the API server's 8080, so the readiness probe is
+      # pointed there rather than at the (insights) 8081 that does not answer it.
+      - "traefik.http.services.backend-web.loadbalancer.server.port=8082"
+      - "traefik.http.services.backend-web.loadbalancer.healthcheck.path=/readyz"
+      - "traefik.http.services.backend-web.loadbalancer.healthcheck.port=8080"
+      - "traefik.http.services.backend-web.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.backend-web.loadbalancer.healthcheck.timeout=5s"
+
+  # ── PostgreSQL (pgvector) ────────────────────────────────────────────
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    networks:
+      - database
+    environment:
+      POSTGRES_USER: evefrontier
+      POSTGRES_DB: evefrontier_club
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # ── Redis (optional, currently disabled) ─────────────────────────────
+  # Currently disabled in backend config — include for future use.
+  # redis:
+  #   image: redis:7-alpine
+  #   restart: unless-stopped
+  #   networks:
+  #     - database
+
+  # ── Middlewares ──────────────────────────────────────────────────────
+  # Defined inline via labels on the frontend and backend services:
+  #   frontend-https-redirect: redirectscheme.scheme=https, redirectscheme.permanent=true
+  #   backend-https-redirect:  redirectscheme.scheme=https, redirectscheme.permanent=true
+
+networks:
+  web:
+    external: true
+  internal:
+    driver: bridge
+  database:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
