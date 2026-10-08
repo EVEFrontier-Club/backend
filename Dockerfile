@@ -1,39 +1,70 @@
-# Build stage
-FROM dart:3.8.0 AS build
-WORKDIR /app
-COPY . .
+# syntax=docker/dockerfile:1
 
-# Install dependencies and compile the server executable
+# ---------- Build stage ----------
+FROM dart:3.10 AS build
+
+WORKDIR /app
+
+# Copy dependency manifests first for layer caching.
+# pubspec.lock is deliberately NOT copied: it is gitignored, so it is absent from a
+# clean checkout / CI build context and `COPY` would fail on the missing source. The
+# image therefore resolves the latest versions allowed by pubspec.yaml at build time.
+COPY pubspec.yaml ./
 RUN dart pub get
+
+# Copy source and compile
+COPY . .
 RUN dart compile exe bin/main.dart -o bin/server
 
-# Final stage
-FROM alpine:latest
+# ---------- Runtime stage ----------
+FROM debian:bookworm-slim AS runtime
+
+# Install curl for healthcheck
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN groupadd --gid 1001 appgroup \
+    && useradd --uid 1001 --gid appgroup --shell /usr/sbin/nologin appuser
+
+WORKDIR /app
+
+# Copy compiled binary
+COPY --from=build /app/bin/server ./server
+
+# Copy configs (passwords.yaml is gitignored and must be mounted at runtime)
+COPY config/production.yaml ./config/production.yaml
+COPY config/generator.yaml ./config/generator.yaml
+
+# Copy migrations
+COPY migrations ./migrations
+
+# Copy generated protocol.yaml (needed for endpoint log filter)
+COPY lib/src/generated/protocol.yaml ./lib/src/generated/protocol.yaml
+
+# Set ownership
+RUN chown -R appuser:appgroup /app
 
 # Environment variables
-ENV runmode=production
-ENV serverid=default
-ENV logging=normal
-ENV role=monolith
+ENV runmode=production \
+    serverid=default \
+    logging=normal \
+    role=monolith
 
-# Copy runtime dependencies
-COPY --from=build /runtime/ /
+# Expose ports: api, insights, web
+EXPOSE 8080 8081 8082
 
-# Copy compiled server executable
-COPY --from=build /app/bin/server server
+# Healthcheck
+# /readyz is served by the main API server on 8080 (8081 = insights, 8082 = web).
+# Start period covers first-boot database migrations, which run before the server
+# begins listening; 30s is generous enough for a cold Postgres on a small host.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -f http://localhost:8080/readyz || exit 1
 
-# Copy configuration files and resources
-COPY --from=build /app/config/ config/
-COPY --from=build /app/web/ web/
-COPY --from=build /app/migrations/ migrations/
+# Switch to non-root user
+USER appuser
 
-# This file is required to enable the endpoint log filter in Insights.
-COPY --from=build /app/lib/src/generated/protocol.yaml lib/src/generated/protocol.yaml
-
-# Expose ports
-EXPOSE 8080
-EXPOSE 8081
-EXPOSE 8082
-
-# Define the entrypoint command
-ENTRYPOINT ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role
+# Entrypoint and default command
+ENTRYPOINT ["./server"]
+CMD ["--mode=production", "--server-id=default", "--logging=normal", "--role=monolith", "--apply-migrations"]
